@@ -1,0 +1,10 @@
+# File Encryption - Short Code
+from cryptography.fernet import Fernet
+
+key = Fernet.generate_key()
+f = Fernet(key)
+
+data = open("file.txt", "rb").read()
+encrypted = f.encrypt(data)
+
+print("File Encrypted!")
