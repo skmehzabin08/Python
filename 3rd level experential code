@@ -1,0 +1,29 @@
+import os
+
+def level3():
+    filename = input("Enter filename: ")
+
+    if not os.path.exists(filename):
+        print("File not found!")
+        return
+
+    with open(filename, "r") as f:
+        text = f.read()
+
+    encrypted = "".join(chr(ord(c) + 3) for c in text)
+
+    with open("encrypted.txt", "w") as f:
+        f.write(encrypted)
+
+    decrypted = "".join(chr(ord(c) - 3) for c in encrypted)
+
+    with open("decrypted.txt", "w") as f:
+        f.write(decrypted)
+
+    print("File encrypted successfully!")
+    print("Encrypted file: encrypted.txt")
+    print("File decrypted successfully!")
+    print("Decrypted file: decrypted.txt")
+
+
+level3()
