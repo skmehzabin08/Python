@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SecureVault | File Encryption System</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+
+body {
+    background: #0b1120;
+    color: white;
+    font-family: Arial, sans-serif;
+    transition: 0.3s;
+}
+
+.navbar {
+    background: #111c32;
+    padding: 18px;
+}
+
+.navbar-brand {
+    color: #36d6c5 !important;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.hero {
+    text-align: center;
+    padding: 55px 15px 30px;
+}
+
+.hero h1 {
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.hero span {
+    color: #36d6c5;
+}
+
+.hero p {
+    color: #aab7ca;
+    font-size: 17px;
+}
+
+.main-card {
+    background: #15223a;
+    border: 1px solid #263956;
+    border-radius: 18px;
+    padding: 30px;
+    max-width: 650px;
+    margin: 20px auto;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+}
+
+.upload-box {
+    border: 2px dashed #36d6c5;
+    border-radius: 15px;
+    padding: 35px 15px;
+    text-align: center;
+    cursor: pointer;
+    background: #101c31;
+}
+
+.upload-box:hover,
+.upload-box.dragover {
+    background: #1b3450;
+}
+
+.upload-box i {
+    font-size: 45px;
+    color: #36d6c5;
+}
+
+.upload-box p {
+    color: #aab7ca;
+}
+
+.form-control {
+    background: #101c31;
+    color: white;
+    border: 1px solid #344766;
+    padding: 12px;
+}
+
+.form-control:focus {
+    background: #101c31;
+    color: white;
+    border-color: #36d6c5;
+    box-shadow: 0 0 5px #36d6c5;
+}
+
+.form-control::placeholder {
+    color: #8292aa;
+}
+
+.form-label {
+    color: #d8e2f0;
+}
+
+.btn-encrypt {
+    background: #36d6c5;
+    color: #081525;
+    font-weight: bold;
+}
+
+.btn-decrypt {
+    background: #3985ed;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-encrypt:hover,
+.btn-decrypt:hover {
+    opacity: 0.85;
+}
+
+.feature-card {
+    background: #15223a;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #263956;
+    height: 100%;
+    text-align: center;
+}
+
+.feature-card i {
+    font-size: 35px;
+    color: #36d6c5;
+}
+
+.feature-card h5 {
+    margin-top: 15px;
+}
+
+.feature-card p {
+    color: #aab7ca;
+}
+
+#message {
+    display: none;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #8292aa;
+}
+
+.light-mode {
+    background: #edf3fa;
+    color: #14243b;
+}
+
+.light-mode .navbar,
+.light-mode .main-card,
+.light-mode .feature-card {
+    background: white;
+    color: #14243b;
+}
+
+.light-mode .upload-box,
+.light-mode .form-control {
+    background: #f3f7fc;
+    color: #14243b;
+}
+
+.light-mode .form-label {
+    color: #14243b;
+}
+
+.light-mode .hero p,
+.light-mode .feature-card p {
+    color: #52627a;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar navbar-expand-lg">
+<div class="container">
+
+<a class="navbar-brand" href="#">
+<i class="bi bi-shield-lock-fill"></i> SecureVault
+</a>
+
+<button class="btn btn-outline-info" onclick="toggleTheme()">
+<i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+</button>
+
+</div>
+</nav>
+
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+
+<h1>Secure Your Files With <span>Encryption</span></h1>
+
+<p>Protect your important files with powerful AES-256 encryption technology.</p>
+
+</section>
+
+
+<!-- MAIN SECTION -->
+
+<div class="container">
+
+<div class="main-card">
+
+<h3 class="text-center mb-4">
+<i class="bi bi-shield-check text-info"></i>
+File Security Center
+</h3>
+
+
+<!-- FILE UPLOAD -->
+
+<label class="form-label">Upload Your File</label>
+
+<div class="upload-box" id="dropArea">
+
+<i class="bi bi-cloud-arrow-up"></i>
+
+<h5 class="mt-3">Drag & Drop Your File Here</h5>
+
+<p>Or click below to browse your files</p>
+
+<input type="file" id="fileInput" hidden>
+
+<button class="btn btn-outline-info"
+onclick="document.getElementById('fileInput').click()">
+Choose File
+</button>
+
+</div>
+
+
+<!-- FILE DETAILS -->
+
+<div id="fileDetails" class="alert alert-info mt-3" style="display:none">
+
+<strong>File Name:</strong>
+<span id="fileName"></span><br>
+
+<strong>File Size:</strong>
+<span id="fileSize"></span><br>
+
+<strong>File Type:</strong>
+<span id="fileType"></span>
+
+<button class="btn btn-sm btn-danger float-end"
+onclick="clearFile()">
+<i class="bi bi-trash"></i> Clear
+</button>
+
+</div>
+
+
+<!-- PASSWORD -->
+
+<div class="mt-4">
+
+<label class="form-label">Enter Security Password</label>
+
+<div class="input-group">
+
+<input type="password"
+id="password"
+class="form-control"
+placeholder="Enter your password"
+oninput="checkStrength()">
+
+<button class="btn btn-outline-info"
+onclick="togglePassword()">
+<i class="bi bi-eye" id="eyeIcon"></i>
+</button>
+
+</div>
+
+<small id="strengthText" class="text-info">
+Password strength: Not entered
+</small>
+
+<div class="progress mt-2" style="height:7px">
+<div class="progress-bar" id="strengthBar"></div>
+</div>
+
+</div>
+
+
+<!-- BUTTONS -->
+
+<div class="row mt-4">
+
+<div class="col-md-6 mb-2">
+
+<button class="btn btn-encrypt w-100 p-3"
+id="encryptBtn" onclick="encryptFile()">
+
+<i class="bi bi-lock-fill"></i>
+Encrypt File
+
+</button>
+
+</div>
+
+<div class="col-md-6 mb-2">
+
+<button class="btn btn-decrypt w-100 p-3"
+id="decryptBtn" onclick="decryptFile()">
+
+<i class="bi bi-unlock-fill"></i>
+Decrypt File
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- STATUS -->
+
+<div id="message" class="alert mt-4 text-center"></div>
+
+<div class="text-center mt-3">
+
+<div class="spinner-border text-info"
+id="loader" style="display:none">
+</div>
+
+<p id="loadingText" class="text-info"></p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FEATURES -->
+
+<div class="container mt-5">
+
+<h2 class="text-center mb-4">
+Why Choose SecureVault?
+</h2>
+
+<div class="row g-4">
+
+<div class="col-md-4">
+
+<div class="feature-card">
+
+<i class="bi bi-shield-lock"></i>
+
+<h5>Strong Encryption</h5>
+
+<p>Protect files using AES-256-GCM encryption.</p>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="feature-card">
+
+<i class="bi bi-lightning-charge"></i>
+
+<h5>Fast Processing</h5>
+
+<p>Encrypt and decrypt files directly in your browser.</p>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="feature-card">
+
+<i class="bi bi-file-earmark-lock"></i>
+
+<h5>File Protection</h5>
+
+<p>Protect documents, images and other file types.</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- HOW IT WORKS -->
+
+<div class="container mt-5 mb-5">
+
+<h2 class="text-center mb-4">How It Works</h2>
+
+<div class="row text-center g-4">
+
+<div class="col-md-4">
+<h1 class="text-info">01</h1>
+<h5>Upload File</h5>
+<p class="text-secondary">Select the file you want to protect.</p>
+</div>
+
+<div class="col-md-4">
+<h1 class="text-info">02</h1>
+<h5>Enter Password</h5>
+<p class="text-secondary">Create a password for your file.</p>
+</div>
+
+<div class="col-md-4">
+<h1 class="text-info">03</h1>
+<h5>Download File</h5>
+<p class="text-secondary">Download your encrypted or decrypted file.</p>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<h5 class="text-info">SecureVault</h5>
+
+<p>File Encryption and Decryption System</p>
+
+<p>College Project | Level 3</p>
+
+</footer>
+
+
+<script>
+
+// FILE UPLOAD
+
+const fileInput = document.getElementById("fileInput");
+const dropArea = document.getElementById("dropArea");
+
+fileInput.addEventListener("change", function() {
+    showFile(this.files[0]);
+});
+
+dropArea.addEventListener("dragover", function(e) {
+    e.preventDefault();
+    dropArea.classList.add("dragover");
+});
+
+dropArea.addEventListener("dragleave", function() {
+    dropArea.classList.remove("dragover");
+});
+
+dropArea.addEventListener("drop", function(e) {
+    e.preventDefault();
+    dropArea.classList.remove("dragover");
+
+    if (e.dataTransfer.files.length) {
+        showFile(e.dataTransfer.files[0]);
+    }
+});
+
+function showFile(file) {
+
+    if (!file) return;
+
+    fileInput.files = createFileList(file);
+
+    document.getElementById("fileDetails").style.display = "block";
+
+    document.getElementById("fileName").innerText = file.name;
+
+    document.getElementById("fileSize").innerText =
+        (file.size / 1024).toFixed(2) + " KB";
+
+    document.getElementById("fileType").innerText =
+        file.type || "Unknown";
+
+    showMessage("", "");
+}
+
+function createFileList(file) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    return dt.files;
+}
+
+function clearFile() {
+
+    fileInput.value = "";
+
+    document.getElementById("fileDetails").style.display = "none";
+
+    showMessage("", "");
+}
+
+
+// PASSWORD VISIBILITY
+
+function togglePassword() {
+
+    const password = document.getElementById("password");
+
+    const icon = document.getElementById("eyeIcon");
+
+    if (password.type === "password") {
+
+        password.type = "text";
+        icon.className = "bi bi-eye-slash";
+
+    } else {
+
+        password.type = "password";
+        icon.className = "bi bi-eye";
+
+    }
+}
+
+
+// PASSWORD STRENGTH
+
+function checkStrength() {
+
+    const password = document.getElementById("password").value;
+
+    let score = 0;
+
+    if (password.length >= 8) score++;
+
+    if (/[A-Z]/.test(password)) score++;
+
+    if (/[0-9]/.test(password)) score++;
+
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    const bar = document.getElementById("strengthBar");
+    const text = document.getElementById("strengthText");
+
+    const labels = [
+        "Not entered",
+        "Weak",
+        "Fair",
+        "Good",
+        "Strong"
+    ];
+
+    bar.style.width = (score * 25) + "%";
+
+    text.innerText = "Password strength: " + labels[score];
+}
+
+
+// DOWNLOAD FUNCTION
+
+function downloadFile(blob, filename) {
+
+    const link = document.createElement("a");
+
+    const url = URL.createObjectURL(blob);
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+
+// ENCRYPTION KEY
+
+async function getKey(password, salt) {
+
+    const encoder = new TextEncoder();
+
+    const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(password),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+    );
+
+    return crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: salt,
+            iterations: 250000,
+            hash: "SHA-256"
+        },
+        keyMaterial,
+        {
+            name: "AES-GCM",
+            length: 256
+        },
+        false,
+        ["encrypt", "decrypt"]
+    );
+
+}
+
+
+// MESSAGE FUNCTION
+
+function showMessage(message, type) {
+
+    const box = document.getElementById("message");
+
+    if (!message) {
+        box.style.display = "none";
+        return;
+    }
+
+    box.style.display = "block";
+    box.className = "alert mt-4 text-center alert-" + type;
+    box.innerText = message;
+
+}
+
+
+// LOADER
+
+function loading(show, text = "") {
+
+    document.getElementById("loader").style.display =
+        show ? "inline-block" : "none";
+
+    document.getElementById("loadingText").innerText = text;
+
+    document.getElementById("encryptBtn").disabled = show;
+    document.getElementById("decryptBtn").disabled = show;
+
+}
+
+
+// ENCRYPT FILE
+
+async function encryptFile() {
+
+    const file = fileInput.files[0];
+
+    const password = document.getElementById("password").value;
+
+    if (!file || !password) {
+        showMessage("Please select a file and enter password.", "warning");
+        return;
+    }
+
+    try {
+
+        loading(true, "Encrypting your file...");
+
+        const data = await file.arrayBuffer();
+
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+
+        const key = await getKey(password, salt);
+
+        const encrypted = await crypto.subtle.encrypt(
+            { name: "AES-GCM", iv: iv },
+            key,
+            data
+        );
+
+        const result = new Blob(
+            [salt, iv, encrypted],
+            { type: "application/octet-stream" }
+        );
+
+        downloadFile(result, file.name + ".enc");
+
+        showMessage("Success! Your file has been encrypted.", "success");
+
+    } catch (error) {
+
+        showMessage("Encryption failed: " + error.message, "danger");
+
+    } finally {
+
+        loading(false);
+
+    }
+
+}
+
+
+// DECRYPT FILE
+
+async function decryptFile() {
+
+    const file = fileInput.files[0];
+
+    const password = document.getElementById("password").value;
+
+    if (!file || !password) {
+        showMessage("Please select an encrypted file and enter password.", "warning");
+        return;
+    }
+
+    try {
+
+        loading(true, "Decrypting your file...");
+
+        const data = await file.arrayBuffer();
+
+        if (data.byteLength < 29) {
+            throw new Error("Invalid encrypted file.");
+        }
+
+        const bytes = new Uint8Array(data);
+
+        const salt = bytes.slice(0, 16);
+
+        const iv = bytes.slice(16, 28);
+
+        const encrypted = bytes.slice(28);
+
+        const key = await getKey(password, salt);
+
+        const decrypted = await crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: iv },
+            key,
+            encrypted
+        );
+
+        const result = new Blob([decrypted]);
+
+        let filename = file.name.replace(/\.enc$/i, "");
+
+        if (filename === file.name) {
+            filename = "decrypted_file";
+        }
+
+        downloadFile(result, filename);
+
+        showMessage("Success! Your file has been decrypted.", "success");
+
+    } catch (error) {
+
+        showMessage("Decryption failed! Check your password or file.", "danger");
+
+    } finally {
+
+        loading(false);
+
+    }
+
+}
+
+
+// DARK AND LIGHT MODE
+
+function toggleTheme() {
+
+    document.body.classList.toggle("light-mode");
+
+    const icon = document.getElementById("themeIcon");
+
+    if (document.body.classList.contains("light-mode")) {
+
+        icon.className = "bi bi-sun-fill";
+
+    } else {
+
+        icon.className = "bi bi-moon-stars-fill";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
